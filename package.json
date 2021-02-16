@@ -1,0 +1,23 @@
+{
+  "name": "yt-gets",
+  "version": "1.0.0",
+  "description": "Youtube Videos Info fetcher",
+  "main": "/src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Youtube",
+    "-",
+    "Download",
+    "-",
+    "Scpaping"
+  ],
+  "author": "talhag3",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "debug": "^4.3.1",
+    "query-string": "^6.14.0"
+  }
+}
