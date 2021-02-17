@@ -2,16 +2,20 @@
   "name": "yt-gets",
   "version": "1.0.0",
   "description": "Youtube Videos Info fetcher",
+  "repository": "talhag3/yt-gets",
   "main": "/src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "Youtube",
-    "-",
     "Download",
-    "-",
-    "Scpaping"
+    "Scpaping",
+    "Download youtube video",
+    "videos",
+    "Talha",
+    "talhag3",
+    "capt41"
   ],
   "author": "talhag3",
   "license": "ISC",
