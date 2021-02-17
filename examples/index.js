@@ -1,6 +1,9 @@
 var ytvid = require('../src/index')
 console.log('ABC')
-// I want this function to return data not promise pending 
-console.log(ytvid('Wy9q22isx3U'))
+ytvid.fetch('https://www.abc.com/watch?v=fggffws8MSXN7A').then((data)=>{
+    console.log(data)
+}).catch((err)=>{
+    console.log(err)
+})
 
 console.log('XYZ')

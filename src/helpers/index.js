@@ -1,7 +1,7 @@
 const qs = require('query-string')
 const { default: axios } = require('axios');
 
-var req_ = function(obj){
+function __req(obj){
     return axios(obj).then((res)=>{
         return res.data
     })
@@ -9,12 +9,17 @@ var req_ = function(obj){
 
 function __responseParser(res){
     let parsed = qs.parse(res)
-    // parsed.fflags = qs.parse(parsed.fflags)
+    if (parsed.status === 'fail'){
+        throw {
+            'status' : 404,
+            'msg' : 'provide valid id or url',
+        }
+    }
     parsed.player_response = JSON.parse(parsed.player_response)
     return parsed
 }
 
-function normalizedData(res){
+function __normalizedData(res){
     let parsed = __responseParser(res)
     let data = {
         videoId : parsed.player_response.videoDetails.videoId || null ,
@@ -41,7 +46,6 @@ function normalizedData(res){
         ownerChannelName : parsed.player_response.microformat.playerMicroformatRenderer.ownerChannelName || null,
         uploadDate : parsed.player_response.microformat.playerMicroformatRenderer.uploadDate || null, 
     }
-
     return data
 }
 
@@ -50,12 +54,13 @@ function normalizedData(res){
  */
 module.exports = {
     /**
-     * @returns {Promise} 
+     * @return {Promise} 
      */
     request: async function(obj){
         let data = {}
-        data = await req_(obj)
+        data = await __req(obj)
         return data
     },
-    normalizedData: normalizedData
+    normalizedData: __normalizedData,
+    urlParse: (url) => qs.parse(url)
 }
