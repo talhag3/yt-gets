@@ -1,6 +1,6 @@
 {
   "name": "yt-gets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Youtube Videos Info fetcher",
   "repository": "talhag3/yt-gets",
   "main": "./src/index.js",
