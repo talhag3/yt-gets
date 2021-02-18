@@ -1,26 +1,21 @@
 const qs = require('query-string')
 const { default: axios } = require('axios');
 
-function __req(obj){
-    return axios(obj).then((res)=>{
-        return res.data
-    })
+async function request(obj){
+    return (await axios(obj)).data
 }
 
-function __responseParser(res){
+function parseResponse(res){
     let parsed = qs.parse(res)
-    if (parsed.status === 'fail'){
-        throw {
-            'status' : 404,
-            'msg' : 'provide valid id or url',
-        }
+    if (parsed.status === 'fail') throw {
+            message: 'provide valid id or url',
     }
     parsed.player_response = JSON.parse(parsed.player_response)
     return parsed
 }
 
-function __normalizedData(res){
-    let parsed = __responseParser(res)
+function normalizeRes(res){
+    let parsed = parseResponse(res)
     let data = {
         videoId : parsed.player_response.videoDetails.videoId || null ,
         shortDescription : parsed.player_response.videoDetails.shortDescription || null,
@@ -56,11 +51,11 @@ module.exports = {
     /**
      * @return {Promise} 
      */
-    request: async function(obj){
+    request: async (obj) => {
         let data = {}
-        data = await __req(obj)
+        data = await request(obj)
         return data
     },
-    normalizedData: __normalizedData,
+    normalizeRes: normalizeRes,
     urlParse: (url) => qs.parse(url)
 }
