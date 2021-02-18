@@ -1,30 +1,24 @@
 
 'use strict';
-var debug = require('debug')('yt-gets');
-var fs = require('fs');
-var helper = require('./helpers/index');
+const debug = require('debug')('yt-gets');
+const fs = require('fs');
+const helper = require('./helpers/index');
 
 /**
  * Name of this module
  */
-var MODULE_NAME = 'yt-gets';
+const MODULE_NAME = 'yt-gets';
 
-var ID= ''
+const ID= '?'
 
 /**
  * Endpoint 
  */
-var SERVICE_ENDPOINT = 'https://youtube.com/get_video_info?video_id=';
+const SERVICE_ENDPOINT = 'https://youtube.com/get_video_info?video_id=';
 
-var ID = null
-
-function __validURL(str) {
-    var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
-    if (!regex.test(str)) {
-        return false;
-    } else {
-        return true;
-    }
+function validateURL(str) {
+    const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+    return regex.test(str);
 }
 
 
@@ -36,15 +30,12 @@ function __validURL(str) {
  * @return {Promise} video info 
  * 
  */
-async function fetch(url) {
-    ID = __validURL(url) ? helper.urlParse(url.split('?')[1]).v : null || url  
-    if(!ID){
-        throw {
-            'status' : 404,
-            'msg' : 'provide valid id or url',
+module.exports.fetch = async (url) => {
+    let vId = validateURL(url) ? helper.urlParse(url.split('?')[1]).v : null || url  
+    if(!vId) throw {
+            message : 'provide valid id or url',
         }
-    }
-    const res = await helper.request({type:'get',url:SERVICE_ENDPOINT+ID})
+ 
+    const res = await helper.request({ type:'get', url: SERVICE_ENDPOINT + vId })
     return helper.normalizedData(res)
 }
-module.exports.fetch = fetch;
