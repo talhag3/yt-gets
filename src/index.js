@@ -37,5 +37,5 @@ module.exports.fetch = async (url) => {
         }
  
     const res = await helper.request({ type:'get', url: SERVICE_ENDPOINT + vId })
-    return helper.normalizedData(res)
+    return helper.normalizeRes(res)
 }
