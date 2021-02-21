@@ -1,16 +1,20 @@
 {
   "name": "yt-gets",
   "version": "1.0.1",
-  "description": "Youtube Videos Info fetcher",
-  "repository": "talhag3/yt-gets",
-  "main": "./src/index.js",
+  "description": "Youtube Video Info fetcher | Download youtube video ",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/talhag3/yt-gets"
+  },
+  "main": "src/index.js",
   "scripts": {
+    "example": "node ./examples/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "Youtube",
     "Download",
-    "Scpaping",
+    "Scrpaping",
     "Download youtube video",
     "videos",
     "Talha",

@@ -14,6 +14,30 @@ function parseResponse(res){
     return parsed
 }
 
+function prepareMeidaObj(obj) {
+    return {
+        url:obj.url || null,
+        mimeType:obj.mimeType || null,
+        width:obj.width || null,
+        height:obj.height || null,
+        quality:obj.quality || null,
+        qualitylable:obj.qualitylbl || null,
+        audioQuality:obj.audioQuality || null
+    }
+}
+
+function normaileMedia(data,type = 'v') {
+    let noraml = []
+    data.filter(el => {
+        if(el.mimeType.includes('audio/') && type === 'a' ){
+            noraml.push(prepareMeidaObj(el))
+        }else if(el.mimeType.includes('video/') && type === 'v' ){
+            noraml.push(prepareMeidaObj(el))
+        }
+    })
+    return noraml
+}
+
 function normalizeRes(res){
     let parsed = parseResponse(res)
     let data = {
@@ -29,8 +53,8 @@ function normalizeRes(res){
         images : parsed.player_response.videoDetails.thumbnail.thumbnails || null,
         media : {
             expiry : parsed.player_response.streamingData.expiresInSeconds || null,
-            medias : [parsed.player_response.streamingData.formats || null,
-                parsed.player_response.streamingData.adaptiveFormats || null],
+            video : normaileMedia([...parsed.player_response.streamingData.formats, ...parsed.player_response.streamingData.adaptiveFormats]),
+            audio : normaileMedia(parsed.player_response.streamingData.adaptiveFormats,'a')
         },
         iframeURL :  parsed.player_response.microformat.playerMicroformatRenderer.embed.iframeUrl || null,
         description : parsed.player_response.microformat.playerMicroformatRenderer.description.simpleText || null,

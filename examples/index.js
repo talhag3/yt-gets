@@ -1,9 +1,6 @@
-var ytvid = require('../src/index')
-console.log('ABC')
-ytvid.fetch('https://www.abc.com/watch?v=fggffws8MSXN7A').then((data)=>{
+const ytvid = require('../src/index')
+ytvid.fetch('https://www.youtube.com/watch?v=7UpNiTap4m8').then((data)=>{
     console.log(data)
 }).catch((err)=>{
     console.log(err)
 })
-
-console.log('XYZ')
