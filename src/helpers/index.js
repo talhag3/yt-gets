@@ -1,17 +1,19 @@
 const qs = require('query-string')
 const { default: axios } = require('axios');
+const HTMLParser = require('node-html-parser')
 
 async function request(obj){
     return (await axios(obj)).data
 }
 
 function parseResponse(res){
-    let parsed = qs.parse(res)
-    if (parsed.status === 'fail') throw {
-            message: 'provide valid id or url',
-    }
-    parsed.player_response = JSON.parse(parsed.player_response)
-    return parsed
+    let root = HTMLParser.parse(res)
+    let scripts = root.querySelectorAll('script')
+    let yt_data = scripts.filter( s => s.innerText.includes('var ytInitialPlayerResponse'))[0]
+    yt_data = yt_data.innerText.replace('var ytInitialPlayerResponse = ','').slice(0, -1)
+    yt_data = JSON.parse(yt_data)
+    
+    return yt_data
 }
 
 function prepareMeidaObj(obj) {
@@ -41,29 +43,29 @@ function normaileMedia(data,type = 'v') {
 function normalizeRes(res){
     let parsed = parseResponse(res)
     let data = {
-        videoId : parsed.player_response.videoDetails.videoId || null ,
-        shortDescription : parsed.player_response.videoDetails.shortDescription || null,
-        channelId : parsed.player_response.videoDetails.channelId || null,
-        length: parsed.player_response.videoDetails.lengthSeconds || null,
-        averageRating : parsed.player_response.videoDetails.averageRating || null,
-        viewCount : parsed.player_response.videoDetails.viewCount || null,
-        author : parsed.player_response.videoDetails.author || null,
-        title : parsed.player_response.videoDetails.title || null,
-        keywords : parsed.player_response.videoDetails.keywords || null,
-        images : parsed.player_response.videoDetails.thumbnail.thumbnails || null,
+        videoId : parsed.videoDetails.videoId || null ,
+        shortDescription : parsed.videoDetails.shortDescription || null,
+        channelId : parsed.videoDetails.channelId || null,
+        length: parsed.videoDetails.lengthSeconds || null,
+        averageRating : parsed.videoDetails.averageRating || null,
+        viewCount : parsed.videoDetails.viewCount || null,
+        author : parsed.videoDetails.author || null,
+        title : parsed.videoDetails.title || null,
+        keywords : parsed.videoDetails.keywords || null,
+        images : parsed.videoDetails.thumbnail.thumbnails || null,
         media : {
-            expiry : parsed.player_response.streamingData.expiresInSeconds || null,
-            video : normaileMedia([...parsed.player_response.streamingData.formats, ...parsed.player_response.streamingData.adaptiveFormats]),
-            audio : normaileMedia(parsed.player_response.streamingData.adaptiveFormats,'a')
+            expiry : parsed.streamingData.expiresInSeconds || null,
+            video : normaileMedia([...parsed.streamingData.formats, ...parsed.streamingData.adaptiveFormats]),
+            audio : normaileMedia(parsed.streamingData.adaptiveFormats,'a')
         },
-        iframeURL :  parsed.player_response.microformat.playerMicroformatRenderer.embed.iframeUrl || null,
-        description : parsed.player_response.microformat.playerMicroformatRenderer.description.simpleText || null,
-        ownerProfileUrl : parsed.player_response.microformat.playerMicroformatRenderer.ownerProfileUrl || null,
-        viewCount: parsed.player_response.microformat.playerMicroformatRenderer.viewCount || null,
-        category : parsed.player_response.microformat.playerMicroformatRenderer.category || null,
-        publishDate : parsed.player_response.microformat.playerMicroformatRenderer.publishDate || null,
-        ownerChannelName : parsed.player_response.microformat.playerMicroformatRenderer.ownerChannelName || null,
-        uploadDate : parsed.player_response.microformat.playerMicroformatRenderer.uploadDate || null, 
+        iframeURL :  parsed.microformat.playerMicroformatRenderer.embed.iframeUrl || null,
+        description : parsed.microformat.playerMicroformatRenderer.description.simpleText || null,
+        ownerProfileUrl : parsed.microformat.playerMicroformatRenderer.ownerProfileUrl || null,
+        viewCount: parsed.microformat.playerMicroformatRenderer.viewCount || null,
+        category : parsed.microformat.playerMicroformatRenderer.category || null,
+        publishDate : parsed.microformat.playerMicroformatRenderer.publishDate || null,
+        ownerChannelName : parsed.microformat.playerMicroformatRenderer.ownerChannelName || null,
+        uploadDate : parsed.microformat.playerMicroformatRenderer.uploadDate || null, 
     }
     return data
 }

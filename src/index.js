@@ -14,7 +14,7 @@ const ID= '?'
 /**
  * Endpoint 
  */
-const SERVICE_ENDPOINT = 'https://youtube.com/get_video_info?video_id=';
+const SERVICE_ENDPOINT = 'https://m.youtube.com/watch?v=';
 
 function validateURL(str) {
     const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
