@@ -6,6 +6,49 @@ async function request(obj){
     return (await axios(obj)).data
 }
 
+
+//https://www.youtube.com/s/player/8e83803a/player_ias.vflset/en_US/base.js
+const stringManipulation = {
+    reverse: function(array) {
+        array.reverse();
+    },
+    spliceStart: function(array, startIndex) {
+        array.splice(0, startIndex);
+    },
+    swapElements: function(array, index) {
+        const temp = array[0];
+        array[0] = array[index % array.length];
+        array[index % array.length] = temp;
+    }
+};
+
+const manipulateString = function(inputString) {
+    // Convert the input string to an array of characters
+    const characters = inputString.split("");
+
+    // Perform the manipulations using the defined functions
+    stringManipulation.swapElements(characters, 42);
+    stringManipulation.swapElements(characters, 14);
+    stringManipulation.swapElements(characters, 54);
+    stringManipulation.spliceStart(characters, 2);
+    stringManipulation.reverse(characters);
+    stringManipulation.swapElements(characters, 27);
+    stringManipulation.spliceStart(characters, 3);
+
+    // Convert the array of characters back to a string and return the result
+    return characters.join("");
+};
+
+const decipher = myStr => {
+    const args = qs.parse(myStr);
+    const components = new URL(decodeURIComponent(args.url));
+    const signature = decodeURIComponent(args.s);
+    const signatureKey = args.sp ? args.sp : 'signature';
+    const decipheredSignature = manipulateString(signature);
+    components.searchParams.set(signatureKey, decipheredSignature);
+    return components.toString();
+};
+
 function parseResponse(res){
     let root = HTMLParser.parse(res)
     let scripts = root.querySelectorAll('script')
@@ -18,7 +61,8 @@ function parseResponse(res){
 
 function prepareMeidaObj(obj) {
     return {
-        url:obj.url || null,
+        url:obj.url || decipher(obj.signatureCipher) || null,
+        signatureCipher: obj.signatureCipher || null,
         mimeType:obj.mimeType || null,
         width:obj.width || null,
         height:obj.height || null,
